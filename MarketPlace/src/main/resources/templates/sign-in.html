@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign in</title>
+</head>
+<body>
+
+<form id="loginForm">
+    <label for="username">Login</label>
+    <input id="username" name="username" type="text">
+
+    <br>
+    <br>
+
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password">
+
+    <br>
+
+    <div id="errorMessage" style="color: red;"></div>
+
+    <br>
+
+    <input type="submit" value="Login">
+
+    <a href="/auth/sign-up">You are not registered?</a>
+</form>
+
+<script>
+    document.querySelector('#loginForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Предотвращаем стандартное поведение формы
+
+        const formData = new FormData(this);
+
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+
+        fetch('/auth/sign-in', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/order/create'
+                } else {
+                    return response.json().then(data => {
+                        throw new Error(data.message || 'Something went wrong');
+                    });
+                }
+            })
+            .catch(error => {
+                document.querySelector('#errorMessage').textContent = error.message;
+            });
+    });
+</script>
+
+</body>
+</html>

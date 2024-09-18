@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # Сервис для Spring Boot приложения
+  app:
+    image: marketplace_image:latest
+    container_name: spring_app
+    depends_on:
+      - db
+      - kafka
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://db:5432/MarketPlace"
+      SPRING_DATASOURCE_USERNAME: "petruho"
+      SPRING_DATASOURCE_PASSWORD: "petruho"
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    networks:
+      - spring_network
+
+  # Сервис для PostgreSQL
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: "petruho"
+      POSTGRES_PASSWORD: "petruho"
+      POSTGRES_DB: "MarketPlace"
+    ports:
+      - "5432:5432"
+    volumes:
+      - .:/docker-entrypoint-initdb.d
+    networks:
+      - spring_network
+
+  # Сервис для Kafka
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    networks:
+      - spring_network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - spring_network
+
+networks:
+  spring_network:
+    driver: bridge
