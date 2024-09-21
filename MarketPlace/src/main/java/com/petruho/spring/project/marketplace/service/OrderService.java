@@ -45,6 +45,8 @@ public class OrderService {
     public ResponseEntity<Order> addItemToOrder(OrderRequestDTO orderRequest){
 
         String nameOfItem = orderRequest.getNameOfItem();
+
+        // Получаем Item по имени
         Item item = itemService.findItemByName(nameOfItem);
 
         Long quantity = orderRequest.getQuantity();

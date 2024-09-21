@@ -28,7 +28,7 @@ public class OrderController {
 
     private String currentOrderStatus;
 
-    @GetMapping("/create")
+    @GetMapping("/create") // Создание заказа
     public String order(Model model) {
         order.setOrder(orderService.clearOrder(order.getOrder()));
         currentOrderStatus = null;
@@ -40,7 +40,7 @@ public class OrderController {
     }
 
     @ResponseBody
-    @PostMapping("/add")
+    @PostMapping("/add") // Добавление Item в заказ
     public ResponseEntity<?> addItemToOrder(@RequestBody OrderRequestDTO orderRequest) {
         if (orderRequest.getNameOfItem() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -50,7 +50,7 @@ public class OrderController {
     }
 
     @ResponseBody
-    @GetMapping("/show")
+    @GetMapping("/show") // Показать заказ
     public ResponseEntity<List<ItemDTO>> showOrder() {
        return orderService.showOrder();
     }
@@ -68,7 +68,7 @@ public class OrderController {
     }
 
     @ResponseBody
-    @GetMapping("/getStatus")
+    @GetMapping("/getStatus") // Получить статус заказа с Kafka
     public ResponseEntity<?> getOrderStatus() {
         return ResponseEntity.status(HttpStatus.OK).body(currentOrderStatus);
     }

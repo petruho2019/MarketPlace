@@ -96,9 +96,6 @@
         const quantity = form.querySelector('#count').value;
         const subject = form.querySelector('.item-subject').textContent;
 
-        console.log("Item Name: ", subject);
-        console.log("Quantity: ", quantity);
-
         fetch('/order/add', {
             method: 'POST',
             headers: {

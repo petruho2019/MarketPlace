@@ -12,7 +12,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/auth")
@@ -26,7 +28,7 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
-    @GetMapping("/sign-up")
+    @GetMapping("/sign-up") // Регистрация
     public String signUp(Model model) {
 
         model.addAttribute("signUp",new SignUpRequest());
@@ -34,7 +36,7 @@ public class AuthenticationController {
 
     }
 
-    @GetMapping("/sign-in")
+    @GetMapping("/sign-in") // Авторизация
     public String signIn(Model model) {
 
         model.addAttribute("signIn", new SignInRequest());
@@ -43,8 +45,8 @@ public class AuthenticationController {
     }
 
     @ResponseBody
-    @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequest signUpRequest, BindingResult bindingResult) {
+    @org.springframework.web.bind.annotation.PostMapping("/sign-up")
+    public ResponseEntity<?> signUp(@org.springframework.web.bind.annotation.RequestBody @Valid SignUpRequest signUpRequest, BindingResult bindingResult) {
 
         if(signUpRequest.getEmail() == null || signUpRequest.getPassword() == null || signUpRequest.getUsername() == null) {
             return ResponseEntity.badRequest().build();
@@ -60,8 +62,8 @@ public class AuthenticationController {
     }
 
     @ResponseBody
-    @PostMapping("/sign-in")
-    public ResponseEntity<?> signIn(@RequestBody @Valid SignInRequest signInRequest, BindingResult bindingResult, HttpServletRequest request) {
+    @org.springframework.web.bind.annotation.PostMapping("/sign-in")
+    public ResponseEntity<?> signIn(@org.springframework.web.bind.annotation.RequestBody @Valid SignInRequest signInRequest, BindingResult bindingResult, HttpServletRequest request) {
 
         if (signInRequest.getUsername() == null && signInRequest.getPassword() == null) {
             return ResponseEntity.badRequest().build();
